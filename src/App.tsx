@@ -1,7 +1,32 @@
-export default function App(){
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Registro from "./pages/Registro";
+import Dashboard from "./pages/Dashboard";
+import Libros from "./pages/Libros";
+import Layout from "./components/layout/Layout";
+
+function RutaProtegida({ children }: { children: React.ReactElement }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" replace />;
+}
+
+export default function App() {
   return (
-    <>
-    <h1 className="bg-amber-200">Equipo tilines project 😎</h1>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/"          element={<Home />} />
+        <Route path="/home"      element={<Home />} />
+        <Route path="/login"     element={<Login />} />
+        <Route path="/registro"  element={<Registro />} />
+
+        {/* Rutas protegidas */}
+        <Route element={<Layout />}>
+          <Route path="/dashboard" element={<RutaProtegida><Dashboard /></RutaProtegida>} />
+          <Route path="/libros"    element={<RutaProtegida><Libros /></RutaProtegida>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
